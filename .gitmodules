@@ -1,0 +1,6 @@
+[submodule "promo-portal-back"]
+	path = promo-portal-back
+	url = https://github.com/adetbekov/promo-portal-back
+[submodule "promo-portal"]
+	path = promo-portal
+	url = https://github.com/adetbekov/promo-portal
