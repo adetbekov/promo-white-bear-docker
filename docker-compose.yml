@@ -17,32 +17,19 @@ services:
     depends_on:
       - django
 
-  mysql:
-    image: mysql:5.7
-    container_name: nuxt_django.mysql
-    ports:
-      - 3306:3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=mysitepass
-      - MYSQL_TZ=Asia/Tokyo
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./sql:/docker-entrypoint-initdb.d
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: nuxt_django.phpmyadmin
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=mysql
-      - PMA_USER=mysiteuser
-      - PMA_PASSWORD=mysitepass
-    links:
-      - mysql
-    ports:
-      - 8380:80
-    volumes:
-      - "./phpmyadmin/sessions:/sessions"
+  # mysql:
+  #   image: mysql:5.7
+  #   container_name: nuxt_django.mysql
+  #   ports:
+  #     - 3306:3306
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=mysitepass
+  #     - MYSQL_TZ=Asia/Tokyo
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #     - ./sql:/docker-entrypoint-initdb.d
+  db:
+    image: postgres
 
   django:
     build:
@@ -53,7 +40,7 @@ services:
     expose:
       - "8001"
     depends_on:
-      - mysql
+      - db
     command: uwsgi --socket :8001 --module promobackend.wsgi
 
   nuxt:
