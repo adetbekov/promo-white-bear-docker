@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  django:
+    build: 
+      context: ./promo-portal-back
+    container_name: nuxt_django.django
+    restart: always
+    volumes:
+      - ./promo-portal-back/:/app # maps host diretory to internal container directory
+    # working_dir: /promo-portal-back/
+    # command: sh entrypoint.sh
+    command: uwsgi --socket :8001 --module mysite.wsgi
+    expose:
+      - "8001"
+
+  nuxt:
+    build: 
+      context: ./promo-portal
+    restart: always
+    container_name: nuxt_django.nuxt
+    working_dir: /promo-portal/
+    volumes:
+      - ./promo-portal/:/app
+    command: bash -c "yarn && yarn dev"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - django
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: nuxt_django.nginx
+    ports:
+      - "8000:8000"
+    # volumes:
+    #   - ./nginx/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
+    #   - ./promo-portal/build:/var/www/frontend
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d:ro
+      - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
+      - ./promo-portal-back/static:/static
+    depends_on:
+      - django

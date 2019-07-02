@@ -1,24 +1,69 @@
-version: "3"
+version: '3.4'
+
+volumes:
+  mysql_data:
 
 services:
-  backend:
-    build: ./promo-portal-back
-    volumes:
-      - ./promo-portal-back/:/backend # maps host diretory to internal container directory
-    working_dir: /promo-portal-back/
-    command: sh entrypoint.sh
-  frontend:
-    build: ./promo-portal
-    working_dir: /promo-portal/
-    volumes:
-      - ./promo-portal/:/frontend
-    command: bash -c "yarn && yarn dev"
   nginx:
     image: nginx:latest
+    container_name: nuxt_django.nginx
     ports:
-      - 80:8080
+      - "8000:8000"
     volumes:
-      - ./nginx/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./promo-portal/build:/var/www/frontend
+      - ./nginx/conf:/etc/nginx/conf.d
+      # - ./nginx/params:/etc/nginx/params
+      - ./promo-portal-back/promobackend/promobackend/static:/static
+      
     depends_on:
-      - backend
+      - django
+
+  mysql:
+    image: mysql:5.7
+    container_name: nuxt_django.mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysitepass
+      - MYSQL_TZ=Asia/Tokyo
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: nuxt_django.phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=mysiteuser
+      - PMA_PASSWORD=mysitepass
+    links:
+      - mysql
+    ports:
+      - 8380:80
+    volumes:
+      - "./phpmyadmin/sessions:/sessions"
+
+  django:
+    build:
+      context: ./promo-portal-back
+    container_name: nuxt_django.django
+    volumes:
+      - ./promo-portal-back:/app
+    expose:
+      - "8001"
+    depends_on:
+      - mysql
+    command: uwsgi --socket :8001 --module promobackend.wsgi
+
+  nuxt:
+    build:
+      context: ./promo-portal
+    container_name: nuxt_django.nuxt
+    volumes:
+      - ./promo-portal:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - django
+    command: bash -c "yarn install && npm run dev"
