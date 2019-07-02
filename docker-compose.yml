@@ -35,6 +35,7 @@ services:
     build:
       context: ./promo-portal-back
     container_name: nuxt_django.django
+    dockerfile: Dockerfile
     volumes:
       - ./promo-portal-back:/app
     expose:
@@ -47,6 +48,7 @@ services:
     build:
       context: ./promo-portal
     container_name: nuxt_django.nuxt
+    dockerfile: Dockerfile
     volumes:
       - ./promo-portal:/app
     ports:
