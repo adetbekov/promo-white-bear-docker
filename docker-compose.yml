@@ -34,7 +34,7 @@ services:
   django:
     build:
       context: ./promo-portal-back
-      dockerfile: Dockerfile
+      dockerfile: ./promo-portal-back/Dockerfile
     container_name: nuxt_django.django
     
     volumes:
@@ -48,7 +48,7 @@ services:
   nuxt:
     build:
       context: ./promo-portal
-      dockerfile: Dockerfile
+      dockerfile: ./promo-portal/Dockerfile
     container_name: nuxt_django.nuxt
     
     volumes:
