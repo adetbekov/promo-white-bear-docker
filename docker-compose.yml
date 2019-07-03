@@ -60,11 +60,11 @@ services:
   #   command: bash -c "yarn && yarn dev"
   nuxt:
     build: ./promo-portal
-    container_name: nuxt_django.nuxt
+    container_name: nuxt_django.nuxtik
     volumes:
       - ./promo-portal:/app
-    # ports:
-    #   - "3000:3000"
+    ports:
+      - "3000:3000"
     depends_on:
       - django
     command: bash -c "yarn && yarn dev"
