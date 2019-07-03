@@ -45,16 +45,16 @@ services:
       - db
     command: uwsgi --socket :8001 --module promobackend.wsgi
 
-  # nuxt:
-  #   build:
-  #     context: ./promo-portal
-  #     dockerfile: Dockerfile
-  #   container_name: nuxt_django.nuxt
+  nuxt:
+    build:
+      context: ./promo-portal
+      dockerfile: Dockerfile
+    container_name: nuxt_django.nuxt
     
-  #   volumes:
-  #     - ./promo-portal:/app
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - django
-  #   command: bash -c "yarn && yarn dev"
+    volumes:
+      - ./promo-portal:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - django
+    command: bash -c "yarn && yarn dev"
