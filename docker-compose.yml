@@ -8,7 +8,7 @@ services:
     image: nginx:latest
     container_name: nuxt_django.nginx
     ports:
-      - "8000:8000"
+      - "80:80"
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d
       # - ./nginx/params:/etc/nginx/params
