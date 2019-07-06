@@ -67,5 +67,5 @@ services:
       - "3000:3000"
     depends_on:
       - django
-    command: bash -c "yarn && yarn start"
+    command: bash -c "yarn && yarn build && yarn start"
     
